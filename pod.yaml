@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+  tolerations:
+  - key: "env"
+    operator: "Equal" # You can also use "Exists", "Exists" is the default
+    value: "test"     # The value of the taint
+    effect: "NoSchedule" # The effect of the taint: NoSchedule, PreferNoSchedule, NoExecute
+

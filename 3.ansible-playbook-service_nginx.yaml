@@ -1,0 +1,43 @@
+---
+- name: Deploy NGINX App
+  hosts: localhost
+  gather_facts: no
+  tasks:        
+    - name: Expose NGINX Service
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: nginx-service-np
+            namespace: dev-ns
+          spec:
+            selector:
+              app: nginx
+            ports:
+              - protocol: TCP
+                port: 80
+                targetPort: 80
+                nodePort: 30182
+            type: NodePort
+        kubeconfig: /home/pronojit/.kube/config  # Path to your kubeconfig file
+
+    - name: Expose NGINX Service
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: nginx-service
+            namespace: dev-ns
+          spec:
+            selector:
+              app: nginx
+            ports:
+              - protocol: TCP
+                port: 80
+                targetPort: 80
+            type: ClusterIP
+        kubeconfig: /home/pronojit/.kube/config  # Path to your kubeconfig file

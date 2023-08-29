@@ -1,0 +1,34 @@
+---
+- name: Deploy NGINX App
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Apply NGINX Deployment
+      k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nginx-deployment
+            namespace: default
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: nginx
+            template:
+              metadata:
+                labels:
+                  app: nginx
+              spec:
+                tolerations:
+                - key: "env"
+                  operator: "Equal"
+                  value: "test"
+                  effect: "NoSchedule"
+                containers:
+                  - name: nginx
+                    image: devops.pr:8443/nginx:pr2
+                    imagePullPolicy: IfNotPresent
+        kubeconfig: /home/pronojit/.kube/config  # Path to your kubeconfig file
