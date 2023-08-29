@@ -1,0 +1,24 @@
+---
+- name: Create Local Docker Registry
+  hosts: localhost
+  tasks:
+
+    - name: Pull Registry Image
+      docker_image:
+        name: registry
+        source: pull
+
+    - name: Create Docker Registry Directory
+      file:
+        path: /home/pronojit/DevOpsStudy/devops.pr
+        state: directory
+
+    - name: Run Docker Registry
+      docker_container:
+        name: devops.pr
+        image: registry
+        ports:
+          - "127.0.0.1:8443:5000"
+        volumes:
+          - /home/pronojit/DevOpsStudy/devops.pr:/var/lib/registry
+        restart_policy: always
