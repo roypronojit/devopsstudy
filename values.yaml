@@ -1,0 +1,10 @@
+UserName: user.d
+GroupName: devops
+NameSpace: dev-ns
+Role: dev-ns-role
+RoleBinding: dev-ns-role-binding
+ClusterRole: developer-access
+ClusterRoleBinding: developer-access
+ServiceAccount: dev-sa
+ServiceAccountRole: dev-sa-role
+ServiceAccountRoleBinding: dev-sa-role-binding

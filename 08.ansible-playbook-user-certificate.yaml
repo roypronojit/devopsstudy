@@ -1,0 +1,21 @@
+---
+- name: Create and Sign user Certificate
+  hosts: localhost
+  vars_files:
+    - values.yaml
+  tasks:
+    - name: Create user private key
+      shell: openssl genpkey -algorithm RSA -out /home/pronojit/DevOpsStudy/certs/{{UserName}}.key
+
+    - name: Creating CSR (Certificate Signing Request)
+      shell: openssl req -new -key /home/pronojit/DevOpsStudy/certs/{{UserName}}.key -out /home/pronojit/DevOpsStudy/certs/{{UserName}}.csr -subj "/CN={{UserName}}/O={{GroupName}}"
+
+    - name: Retrive the ca.crt key of the cluster
+      ansible.builtin.command: kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 -d > /home/pronojit/DevOpsStudy/certs/ca.crt
+
+    - name: Retrive the ca.key of the cluster
+      ansible.builtin.command: docker cp multi-node-cluster-control-plane:/etc/kubernetes/pki/ca.key /home/pronojit/DevOpsStudy/certs/ca.key
+
+    - name: Signing Newuser Certificate With K8s CA (Certificate Authorities)
+      ansible.builtin.command: openssl x509 -req -in /home/pronojit/DevOpsStudy/certs/{{UserName}}.csr -CA /home/pronojit/DevOpsStudy/certs/ca.crt -CAkey /home/pronojit/DevOpsStudy/certs/ca.key -CAcreateserial -out /home/pronojit/DevOpsStudy/certs/{{UserName}}.crt -days 365
+

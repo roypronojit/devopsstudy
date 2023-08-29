@@ -1,0 +1,52 @@
+---
+- name: Create Namespaces with Resource Quotas and Limit Ranges
+  hosts: localhost
+  vars_files:
+  - values.yaml
+  tasks:
+    - name: Create Namespace "{{ NameSpace }}"
+      k8s:
+        api_version: v1
+        kind: Namespace
+        name: "{{ NameSpace }}"
+        state: present
+
+    - name: Apply Resource Quota for "{{ NameSpace }}"
+      k8s:
+        api_version: v1
+        kind: ResourceQuota
+        namespace: "{{ NameSpace }}"
+        resource_definition: |
+          apiVersion: v1
+          kind: ResourceQuota
+          metadata:
+            name: quota-{{ NameSpace }}
+          spec:
+            hard:
+              pods: "10"
+              requests.cpu: "2"
+              requests.memory: 2Gi
+              limits.cpu: "4"
+              limits.memory: 4Gi
+        state: present
+
+    - name: Apply Limit Range for "{{ NameSpace }}"
+      k8s:
+        api_version: v1
+        kind: LimitRange
+        namespace: "{{ NameSpace }}"
+        resource_definition: |
+          apiVersion: v1
+          kind: LimitRange
+          metadata:
+            name: limit-range-{{ NameSpace }}
+          spec:
+            limits:
+              - default:
+                  cpu: "1"
+                  memory: 1Gi
+                defaultRequest:
+                  cpu: "0.5"
+                  memory: 500Mi
+                type: Container
+        state: present

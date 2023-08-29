@@ -1,0 +1,8 @@
+---
+- name: Bind Role to User for specific NameSpace
+  hosts: localhost
+  vars_files:
+    - values.yaml
+  tasks:
+    - name: Bind Role to User using kubectl
+      ansible.builtin.command: kubectl create rolebinding {{RoleBinding}} --namespace={{NameSpace}} --user={{UserName}} --role={{Role}}

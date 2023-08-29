@@ -1,0 +1,29 @@
+---
+- name: Create Linux Users
+  hosts: localhost
+  become: yes  # Enable privilege escalation (sudo)
+  tasks:
+
+    - name: Create DevOps Group
+      group:
+        name: devops
+        gid: 1204  # Replace with the desired group ID
+        state: present
+
+    - name: Create user "user.t"
+      ansible.builtin.user:
+        name: user.t
+        password: "{{ 'password' | password_hash('sha512') }}"
+        groups: devops
+        append: yes
+        state: present
+
+    - name: Create user "user.d"
+      ansible.builtin.user:
+        name: user.d
+        password: "{{ 'password' | password_hash('sha512') }}"
+        groups: devops
+        append: yes
+        state: present
+
+    # Add more tasks as needed for additional users

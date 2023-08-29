@@ -1,0 +1,19 @@
+---
+- name: Create Service Account
+  hosts: localhost
+  tasks:
+    - name: Create Dev Service Account
+      k8s:
+        api_version: v1
+        kind: ServiceAccount
+        name: dev-sa
+        namespace: dev-ns
+        state: present
+        
+    - name: Create Test Service Account
+      k8s:
+        api_version: v1
+        kind: ServiceAccount
+        name: test-sa
+        namespace: test-ns
+        state: present
